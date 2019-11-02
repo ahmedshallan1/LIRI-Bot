@@ -2,8 +2,7 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var inquirer = require("inquirer");
 var axios = require("axios");
-var momemt = require("moment");
-var fs = require('fs');
+var moment = require("moment");
 var Spotify = require("node-spotify-api");
 
 //spotify construction here?
@@ -29,19 +28,15 @@ inquirer.prompt([{
       case 'Concert':
         console.log("The Concert case was hit")
         searchConcert(searchThis);
-        break;
       case 'Song':
         console.log("The Song case was hit")
         searchSong(searchThis);
-        break;
       case 'Movie':
         console.log("The Movie case was hit")
         searchMovie(searchThis);
-        break;
       case 'doWhatItSays':
         console.log("The doWhatItSays case was hit")
         doWhatItSays(searchThis);
-        break;
 
     }
   });
@@ -78,7 +73,24 @@ function searchMovie(searchThis) {
 };
 
 // concert command
+function searchConcert(search) {
+  var url = 'https://rest.bandsintown.com/artists/' + search + '/events?app_id=codingbootcamp';
 
+  axios
+    .get(url)
+    .then((response) => {
+      for (var i = 0; i < response.data.length; i++) {
+        console.log('------------------');
+        console.log(`Venue: ${response.data[i].venue.name}`);
+        console.log(`Location: ${response.data[i].venue.city}, ${response.data[i].venue.country}`);
+        console.log(`Date: ${moment(response.data[i].datetime).format('MM/DD/YYYY')}`);
+        console.log('-----------------');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 // song command
 function searchSong(search) {
   if (search === undefined) {
@@ -108,7 +120,6 @@ function searchSong(search) {
   );
 }
 // movie command
-
 function searchMovie(search) {
   let movieQueryURL = 'http://www.omdbapi.com/?t=' + search + '&y=&plot=short&apikey=trilogy';
     axios
@@ -136,7 +147,7 @@ function searchMovie(search) {
         console.log(error);
       });
   }
-  // doWhatItSays function
+// doWhatItSays function
 function doWhatItSays(searchThis) {
   console.log("We got into the doWhatItSays function at least")
   spotify.search({ type: 'track', query: searchThis }, function (err, data) {
@@ -144,8 +155,10 @@ function doWhatItSays(searchThis) {
       return console.log('Error occurred: ' + err);
     }
     console.log(data);
+
   })
 };
+
 // // movie
 // //OMDB Movie - command: movie-this
 //   // OMDB Movie - this MOVIE base code is from class files, I have modified for more data and assigned parse.body to a Var
