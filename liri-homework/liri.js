@@ -21,19 +21,20 @@ var spotify = new Spotify(keys.spotify);
 //   name: "searchTerm"
 // }
 // ])
-var command = process.argv[2];
-var search = process.argv[3];
+var userCommand = process.argv[2];
+var secondCommand = process.argv[3];
 
-function callCommands(command, search) {
-  switch (command) {
+
+function Commands(userCommand, secondCommand) {
+  switch (userCommand) {
     case 'concert-this':
-      concertThis(search);
+      concertThis(secondCommand);
       break;
     case 'spotify-this-song':
-      spotifyThis(search);
+      spotifyThis(secondCommand);
       break;
     case 'movie-this':
-      movieThis(search);
+      movieThis(secondCommand);
       break;
     case 'do-what-it-says':
       doWhatItSays();
@@ -44,22 +45,18 @@ function callCommands(command, search) {
 
 
 console.log(
-  "Please type one of these commands', 'concert-this': to search your favorite artist concerts', 'spotify-this-song': to search your favorite song', 'movie-this': to search your favorite movie', 'do-what-it-says': using command from random.txt."
-);
-console.log('-------');
-
+  "Please type one of these commands', 'concert-this': to search your favorite artist concerts', 'spotify-this-song': to search your favorite song', 'movie-this': to search your favorite movie', 'do-what-it-says': using command from random.txt.");
 // doWhatItSays command
 function doWhatItSays() {
   fs.readFile('random.txt', 'utf8', function (err, data) {
-    if (err);
     var dataArr = data.split(',');
-    callCommands(dataArr[0], dataArr[1]);
+    Commands(dataArr[0], dataArr[1]);
   });
 }
-callCommands(command, search);
+Commands(userCommand, secondCommand);
 // concert command
-function concertThis(search) {
-  var url = 'https://rest.bandsintown.com/artists/' + search + '/events?app_id=codingbootcamp';
+function concertThis(secondCommand) {
+  var url = 'https://rest.bandsintown.com/artists/' + secondCommand + '/events?app_id=codingbootcamp';
 
   axios
     .get(url)
@@ -77,14 +74,14 @@ function concertThis(search) {
     });
 }
 // song command
-function spotifyThis(search) {
-  if (search === undefined) {
-    search = 'The Sign';
+function spotifyThis(secondCommand) {
+  if (secondCommand === undefined) {
+    secondCommand = 'The Sign';
   }
   spotify.search(
     {
       type: 'track',
-      query: search
+      query: secondCommand
     },
     function (err, data) {
       if (err) {
